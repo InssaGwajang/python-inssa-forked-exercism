@@ -1,10 +1,12 @@
-from sets_categories_data import (VEGAN,
-                                  VEGETARIAN,
-                                  KETO,
-                                  PALEO,
-                                  OMNIVORE,
-                                  ALCOHOLS,
-                                  SPECIAL_INGREDIENTS)
+from sets_categories_data import (
+    VEGAN,
+    VEGETARIAN,
+    KETO,
+    PALEO,
+    OMNIVORE,
+    ALCOHOLS,
+    SPECIAL_INGREDIENTS,
+)
 
 
 def clean_ingredients(dish_name, dish_ingredients):
@@ -18,7 +20,7 @@ def clean_ingredients(dish_name, dish_ingredients):
     followed by the de-duped `set` of ingredients as the second item.
     """
 
-    pass
+    return (dish_name, set(dish_ingredients))
 
 
 def check_drinks(drink_name, drink_ingredients):
@@ -32,7 +34,13 @@ def check_drinks(drink_name, drink_ingredients):
     no alcoholic ingredients, and drink name followed by "Cocktail" if the drink includes alcohol.
     """
 
-    pass
+    from functools import reduce
+
+    return (
+        drink_name
+        + " "
+        + ("Cocktail" if any(True for ingredient in drink_ingredients if ingredient in ALCOHOLS) else "Mocktail")
+    )
 
 
 def categorize_dish(dish_name, dish_ingredients):
@@ -47,7 +55,17 @@ def categorize_dish(dish_name, dish_ingredients):
     (VEGAN, VEGETARIAN, PALEO, KETO, or OMNIVORE).
     """
 
-    pass
+    from functools import reduce
+
+    for category, ingredients in {
+        "VEGAN": VEGAN,
+        "VEGETARIAN": VEGETARIAN,
+        "PALEO": PALEO,
+        "KETO": KETO,
+        "OMNIVORE": OMNIVORE,
+    }.items():
+        if set(dish_ingredients) <= set(ingredients):
+            return f"{dish_name}: {category}"
 
 
 def tag_special_ingredients(dish):
@@ -61,7 +79,7 @@ def tag_special_ingredients(dish):
     SPECIAL_INGREDIENTS constant imported from `sets_categories_data.py`.
     """
 
-    pass
+    return (dish[0], set(dish[1]).intersection(SPECIAL_INGREDIENTS))
 
 
 def compile_ingredients(dishes):
@@ -73,7 +91,7 @@ def compile_ingredients(dishes):
     This function should return a `set` of all ingredients from all listed dishes.
     """
 
-    pass
+    return set.union(*dishes)
 
 
 def separate_appetizers(dishes, appetizers):
@@ -87,7 +105,7 @@ def separate_appetizers(dishes, appetizers):
     Either list could contain duplicates and may require de-duping.
     """
 
-    pass
+    return list(set(dishes) - set(appetizers))
 
 
 def singleton_ingredients(dishes, intersection):
@@ -103,4 +121,5 @@ def singleton_ingredients(dishes, intersection):
     The function should return a `set` of ingredients that only appear in a single dish.
     """
 
-    pass
+    singletons = (dish - intersection for dish in dishes)
+    return set.union(*singletons)
